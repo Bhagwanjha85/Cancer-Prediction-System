@@ -108,3 +108,57 @@ section[data-testid="stSidebar"] {
     border-radius: 0 12px 12px 0;
     margin-top: 20px;
 }
+
+/* ==========================================
+   Global Dark Theme Force & Light Override Fix
+   ========================================== */
+.stApp, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {
+    background-color: #000000 !important;
+}
+
+/* Force standard text to be white */
+.stMarkdown p, .stMarkdown li, .stMarkdown span, .stMarkdown label, .stMarkdown td {
+    color: #ffffff !important;
+}
+
+/* Force heading tags to be white */
+.stMarkdown h1, .stMarkdown h2, .stMarkdown h4, .stMarkdown h5, .stMarkdown h6 {
+    color: #ffffff !important;
+}
+
+/* Allow h3 to inherit color (e.g. customized color in card headings) */
+.stMarkdown h3 {
+    color: inherit;
+}
+
+/* Glass card contents styling */
+.glass-card p, .glass-card li, .glass-card td, .glass-card span {
+    color: #E2E8F0 !important;
+}
+
+/* Result box text colors force */
+.result-box-normal h1, .result-box-normal h2, .result-box-normal h3, .result-box-normal p,
+.result-box-cancerous h1, .result-box-cancerous h2, .result-box-cancerous h3, .result-box-cancerous p {
+    color: #ffffff !important;
+}
+
+/* Input Fields (Text inputs, Textareas, Selectboxes) */
+div[data-baseweb="input"] input, div[data-baseweb="textarea"] textarea, div[data-baseweb="select"] select {
+    color: #ffffff !important;
+    background-color: #121212 !important;
+}
+
+div[data-baseweb="input"], div[data-baseweb="textarea"], div[data-baseweb="select"] {
+    background-color: #121212 !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Sidebar Overrides */
+section[data-testid="stSidebar"] {
+    background-color: #000000 !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+section[data-testid="stSidebar"] .stMarkdown p, section[data-testid="stSidebar"] span, section[data-testid="stSidebar"] label {
+    color: #ffffff !important;
+}
