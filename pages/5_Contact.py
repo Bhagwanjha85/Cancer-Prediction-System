@@ -33,28 +33,27 @@ with col1:
     st.markdown(
         """
         <div class="glass-card">
-            <h3 style="color: #FF006E; margin-top:0;">Developer Profile</h3>
+            <h3 style="color: #1b285c; margin-top:0;">ICMR-RMNIHR Cancer Detection System</h3>
             <p style="color: #E2E8F0; font-size: 0.95rem; line-height: 1.6;">
-                <b>Lead AI Engineer & System Architect</b><br/>
-                Specializing in Computer Vision, Deep Learning, and Medical AI solutions.
+                <b>Virology Department</b><br/>
+                Led by <b>Dr. Ganesh Chandra Sahoo</b>, Department Head and Scientist 'F'.
             </p>
             <p style="color: #94A3B8; font-size: 0.9rem; line-height: 1.6;">
-                Interested in taking this project to production or integrating it with institutional clinical systems? 
-                Feel free to connect or review the open-source repository details below.
+                This system was created for public social use, enabling individuals to run predictive screenings for oral and skin malignancies prior to receiving formal clinical diagnostic check-ups.
             </p>
             <hr style="border-color: rgba(255,255,255,0.05); margin: 15px 0;"/>
             <table style="width: 100%; border-collapse: collapse; font-size: 0.95rem; color: #E2E8F0;">
                 <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
-                    <td style="padding: 10px 0; font-weight: bold; color: #FF006E; width: 30%;">Email</td>
-                    <td style="padding: 10px 0;"><a href="mailto:developer@oncovision.ai" style="color: #3A86FF; text-decoration: none;">developer@oncovision.ai</a></td>
+                    <td style="padding: 10px 0; font-weight: bold; color: #1b285c; width: 30%;">Department</td>
+                    <td style="padding: 10px 0;">Virology Department, ICMR-RMNIHR</td>
                 </tr>
                 <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
-                    <td style="padding: 10px 0; font-weight: bold; color: #FF006E;">GitHub</td>
-                    <td style="padding: 10px 0;"><a href="https://github.com" target="_blank" style="color: #3A86FF; text-decoration: none;">github.com/oncovision-ai</a></td>
+                    <td style="padding: 10px 0; font-weight: bold; color: #1b285c;">GitHub</td>
+                    <td style="padding: 10px 0;"><a href="https://github.com/Bhagwanjha85/Cancer-Prediction-System" target="_blank" style="color: #ffffff; text-decoration: none;">github.com/Bhagwanjha85/Cancer-Prediction-System</a></td>
                 </tr>
                 <tr>
-                    <td style="padding: 10px 0; font-weight: bold; color: #FF006E;">LinkedIn</td>
-                    <td style="padding: 10px 0;"><a href="https://linkedin.com" target="_blank" style="color: #3A86FF; text-decoration: none;">linkedin.com/in/oncovision</a></td>
+                    <td style="padding: 10px 0; font-weight: bold; color: #1b285c;">Consultant</td>
+                    <td style="padding: 10px 0;">Dr. Ganesh Chandra Sahoo</td>
                 </tr>
             </table>
         </div>
@@ -66,7 +65,7 @@ with col2:
     st.markdown(
         """
         <div class="glass-card">
-            <h3 style="color: #3A86FF; margin-top:0;">Quick Inquiry Form</h3>
+            <h3 style="color: #1b285c; margin-top:0;">Quick Inquiry Form</h3>
             <p style="color: #94A3B8; font-size: 0.9rem; margin-bottom: 15px;">
                 Submit your feedback or research queries directly to our engineering team.
             </p>

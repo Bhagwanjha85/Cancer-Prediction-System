@@ -196,8 +196,8 @@ with tab2:
                     "Val Accuracy": "{:.1%}",
                     "Val Loss": "{:.3f}",
                     "Training Time (s)": "{:.1f}"
-                }).highlight_max(axis=0, subset=["Val Accuracy"], color="rgba(34, 197, 94, 0.2)")
-                  .highlight_min(axis=0, subset=["Val Loss"], color="rgba(34, 197, 94, 0.2)"),
+                }).highlight_max(axis=0, subset=["Val Accuracy"], color="rgba(27, 40, 92, 0.3)")
+                  .highlight_min(axis=0, subset=["Val Loss"], color="rgba(27, 40, 92, 0.3)"),
                 use_container_width=True
             )
             
@@ -208,7 +208,7 @@ with tab2:
             bars = ax.barh(
                 sorted_comp["Architecture"], 
                 sorted_comp["Val Accuracy"] * 100, 
-                color=["#FFD166" if name != best_name else "#FF006E" for name in sorted_comp["Architecture"]],
+                color=["#808080" if name != best_name else "#1b285c" for name in sorted_comp["Architecture"]],
                 height=0.55
             )
             

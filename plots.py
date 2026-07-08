@@ -18,9 +18,9 @@ def plot_training_history(history: Dict[str, List[float]]) -> plt.Figure:
     epochs = range(1, len(history["accuracy"]) + 1)
     
     # Accuracy plot
-    ax1.plot(epochs, history["accuracy"], "o-", label="Training Accuracy", color="#3A86FF", linewidth=2)
+    ax1.plot(epochs, history["accuracy"], "o-", label="Training Accuracy", color="#1b285c", linewidth=2)
     if "val_accuracy" in history:
-        ax1.plot(epochs, history["val_accuracy"], "s-", label="Validation Accuracy", color="#FF006E", linewidth=2)
+        ax1.plot(epochs, history["val_accuracy"], "s-", label="Validation Accuracy", color="#808080", linewidth=2)
     ax1.set_title("Training & Validation Accuracy", fontsize=14, fontweight="bold", pad=15)
     ax1.set_xlabel("Epochs", fontsize=12)
     ax1.set_ylabel("Accuracy", fontsize=12)
@@ -28,9 +28,9 @@ def plot_training_history(history: Dict[str, List[float]]) -> plt.Figure:
     ax1.grid(True, linestyle="--", alpha=0.6)
     
     # Loss plot
-    ax2.plot(epochs, history["loss"], "o-", label="Training Loss", color="#3A86FF", linewidth=2)
+    ax2.plot(epochs, history["loss"], "o-", label="Training Loss", color="#1b285c", linewidth=2)
     if "val_loss" in history:
-        ax2.plot(epochs, history["val_loss"], "s-", label="Validation Loss", color="#FF006E", linewidth=2)
+        ax2.plot(epochs, history["val_loss"], "s-", label="Validation Loss", color="#808080", linewidth=2)
     ax2.set_title("Training & Validation Loss", fontsize=14, fontweight="bold", pad=15)
     ax2.set_xlabel("Epochs", fontsize=12)
     ax2.set_ylabel("Loss", fontsize=12)
@@ -85,7 +85,7 @@ def plot_roc_curves(y_true_onehot: np.ndarray, y_pred_probs: np.ndarray, class_n
     fig, ax = plt.subplots(figsize=(8, 6))
     
     n_classes = len(class_names)
-    colors = ["#FF5733", "#33FF57", "#3357FF", "#F3FF33", "#FF33F3", "#33FFF3", "#F333FF"]
+    colors = ["#1b285c", "#000000", "#808080", "#cccccc", "#555555"]
     
     for i in range(n_classes):
         fpr, tpr, _ = roc_curve(y_true_onehot[:, i], y_pred_probs[:, i])
@@ -118,7 +118,7 @@ def plot_probability_graph(probabilities: np.ndarray, class_names: List[str]) ->
     # Select colors for the classes (highlights the highest one)
     max_idx = np.argmax(probabilities)
     colors = ["#E9ECEF"] * len(class_names)
-    colors[max_idx] = "#3A86FF" if ("Normal" in class_names[max_idx] or "Ulcer" in class_names[max_idx]) else "#FF006E"
+    colors[max_idx] = "#1b285c"
     
     y_pos = np.arange(len(class_names))
     

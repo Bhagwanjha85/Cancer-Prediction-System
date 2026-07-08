@@ -91,7 +91,7 @@ with col_pie:
         split_totals, 
         labels=split_names, 
         autopct='%1.1f%%', 
-        colors=["#3A86FF", "#FF006E", "#FFD166"],
+        colors=["#1b285c", "#808080", "#ffffff"],
         startangle=90, 
         textprops={'fontsize': 9, 'weight': 'bold', 'color': '#212529'}
     )
@@ -100,7 +100,7 @@ with col_pie:
     class_labels = [c.replace("_", " ") for c in categories.keys()]
     class_totals = [df_stats[c.replace("_", " ")].sum() for c in categories.keys()]
     
-    ax2.bar(class_labels, class_totals, color=["#FF006E", "#EF4444", "#3A86FF", "#10B981"], width=0.5)
+    ax2.bar(class_labels, class_totals, color=["#1b285c", "#808080", "#ffffff", "#cccccc"], width=0.5)
     ax2.set_ylabel("Quantity", fontsize=9)
     ax2.set_title("Target Class Volumes", fontsize=11, fontweight="bold")
     plt.setp(ax2.xaxis.get_majorticklabels(), rotation=35, ha="right", fontsize=8)
@@ -121,8 +121,8 @@ for idx, (class_name, (cat, subcat)) in enumerate(categories.items()):
     with grid_cols[idx]:
         st.markdown(
             f"""
-            <div style="background: rgba(30, 41, 59, 0.4); padding: 12px; border-radius: 12px; border: 1.5px solid rgba(255,255,255,0.06); margin-bottom: 10px;">
-                <h4 style="margin: 0 0 8px 0; color: #FF006E; text-align: center;">{class_name.replace("_", " ")}</h4>
+            <div style="background: rgba(255, 255, 255, 0.02); padding: 12px; border-radius: 12px; border: 1.5px solid rgba(255,255,255,0.06); margin-bottom: 10px;">
+                <h4 style="margin: 0 0 8px 0; color: #1b285c; text-align: center;">{class_name.replace("_", " ")}</h4>
             </div>
             """,
             unsafe_allow_html=True
@@ -169,14 +169,14 @@ with col_bench_table:
             "F1-Score": "{:.1%}",
             "Inference Speed (ms)": "{:d} ms",
             "Model Size (MB)": "{:d} MB"
-        }).background_gradient(cmap="RdYlGn", subset=["Accuracy", "F1-Score"]),
+        }).background_gradient(cmap="Blues", subset=["Accuracy", "F1-Score"]),
         use_container_width=True
     )
 
 with col_bench_chart:
     st.write("**Accuracy Comparison**")
     fig_bench, ax_bench = plt.subplots(figsize=(6, 3.5))
-    colors = ["#10B981", "#3A86FF", "#FFD166", "#FF006E", "#EF4444"]
+    colors = ["#1b285c", "#555555", "#808080", "#ffffff", "#cccccc"]
     y_pos = np.arange(len(df_benchmark))
     ax_bench.barh(y_pos, df_benchmark["Accuracy"], color=colors, height=0.55)
     ax_bench.set_yticks(y_pos)

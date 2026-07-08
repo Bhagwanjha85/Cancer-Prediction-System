@@ -33,7 +33,7 @@ with col1:
     st.markdown(
         """
         <div class="glass-card">
-            <h3 style="color: #FF006E; margin-top:0;">Deep Learning in Medical Imaging</h3>
+            <h3 style="color: #1b285c; margin-top:0;">Deep Learning in Medical Imaging</h3>
             <p style="color: #E2E8F0; font-size: 0.95rem; line-height: 1.6;">
                 Deep Convolutional Neural Networks (CNNs) have revolutionized computerized diagnostics. 
                 By utilizing layered convolutions, pooling, and feature extraction layers, CNNs learn 
@@ -47,7 +47,7 @@ with col1:
         </div>
         
         <div class="glass-card">
-            <h3 style="color: #3A86FF; margin-top:0;">The Power of Transfer Learning</h3>
+            <h3 style="color: #1b285c; margin-top:0;">The Power of Transfer Learning</h3>
             <p style="color: #E2E8F0; font-size: 0.95rem; line-height: 1.6;">
                 Medical datasets are frequently limited in size, making training models from scratch highly susceptible to overfitting. 
                 <b>Transfer Learning</b> resolves this by utilizing models pre-trained on massive open-source visual datasets (like ImageNet).
@@ -66,7 +66,7 @@ with col2:
     st.markdown(
         """
         <div class="glass-card">
-            <h3 style="color: #FFD166; margin-top:0;">Explainable AI (Grad-CAM)</h3>
+            <h3 style="color: #1b285c; margin-top:0;">Explainable AI (Grad-CAM)</h3>
             <p style="color: #E2E8F0; font-size: 0.95rem; line-height: 1.6;">
                 Deep Learning models are often criticized as "black boxes" because their decision-making logic is hidden. 
                 To ensure clinical utility, OncoVision implements <b>Grad-CAM (Gradient-weighted Class Activation Mapping)</b>.
@@ -79,26 +79,26 @@ with col2:
         </div>
         
         <div class="glass-card">
-            <h3 style="color: #10B981; margin-top:0;">Portal Technology Stack</h3>
+            <h3 style="color: #1b285c; margin-top:0;">Portal Technology Stack</h3>
             <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; color: #E2E8F0;">
                 <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
-                    <td style="padding: 8px 0; font-weight: bold; color: #10B981;">Frontend Framework</td>
+                    <td style="padding: 8px 0; font-weight: bold; color: #1b285c;">Frontend Framework</td>
                     <td style="padding: 8px 0;">Streamlit Dashboard</td>
                 </tr>
                 <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
-                    <td style="padding: 8px 0; font-weight: bold; color: #10B981;">Deep Learning Engine</td>
+                    <td style="padding: 8px 0; font-weight: bold; color: #1b285c;">Deep Learning Engine</td>
                     <td style="padding: 8px 0;">PyTorch & Torchvision</td>
                 </tr>
                 <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
-                    <td style="padding: 8px 0; font-weight: bold; color: #10B981;">Computer Vision API</td>
+                    <td style="padding: 8px 0; font-weight: bold; color: #1b285c;">Computer Vision API</td>
                     <td style="padding: 8px 0;">OpenCV (CV2)</td>
                 </tr>
                 <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
-                    <td style="padding: 8px 0; font-weight: bold; color: #10B981;">Report Compiler</td>
+                    <td style="padding: 8px 0; font-weight: bold; color: #1b285c;">Report Compiler</td>
                     <td style="padding: 8px 0;">ReportLab PDF Generator</td>
                 </tr>
                 <tr>
-                    <td style="padding: 8px 0; font-weight: bold; color: #10B981;">Pre-validation model</td>
+                    <td style="padding: 8px 0; font-weight: bold; color: #1b285c;">Pre-validation model</td>
                     <td style="padding: 8px 0;">MobileNetV2 (ImageNet)</td>
                 </tr>
             </table>
