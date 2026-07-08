@@ -1,0 +1,21 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Large model checkpoints and serialized weights
+models/*.pth
+models/weights*.pth
+
+# Dataset directories containing images
+dataset/
+
+# Log files
+*.log
+app.log
+
+# Temporary / Local user data
+prediction_history.csv
+.streamlit/
+.ipynb_checkpoints/
+.DS_Store
