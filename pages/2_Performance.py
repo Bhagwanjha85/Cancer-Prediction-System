@@ -16,7 +16,7 @@ logo_img = Image.open(logo_path) if os.path.exists(logo_path) else None
 
 # Configure page
 st.set_page_config(
-    page_title="Model Performance - RMRIMS Virology Dept.",
+    page_title="Model Performance - RMNIHR Virology Dept.",
     page_icon=logo_img if logo_img else "https://cdn-icons-png.flaticon.com/512/2877/2877840.png",
     layout="wide"
 )

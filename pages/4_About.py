@@ -9,7 +9,7 @@ logo_img = Image.open(logo_path) if os.path.exists(logo_path) else None
 
 # Configure page
 st.set_page_config(
-    page_title="About - RMRIMS Virology Dept.",
+    page_title="About - RMNIHR Virology Dept.",
     page_icon=logo_img if logo_img else "https://cdn-icons-png.flaticon.com/512/2877/2877840.png",
     layout="wide"
 )
@@ -74,7 +74,7 @@ with col2:
             <h3 style="color: #1b285c; margin-top:0;">Explainable AI (Grad-CAM)</h3>
             <p style="color: #E2E8F0; font-size: 0.95rem; line-height: 1.6;">
                 Deep Learning models are often criticized as "black boxes" because their decision-making logic is hidden. 
-                To ensure clinical utility, RMRIMS Virology Dept. implements <b>Grad-CAM (Gradient-weighted Class Activation Mapping)</b>.
+                To ensure clinical utility, RMNIHR Virology Dept. implements <b>Grad-CAM (Gradient-weighted Class Activation Mapping)</b>.
             </p>
             <p style="color: #94A3B8; font-size: 0.9rem; line-height: 1.6;">
                 Grad-CAM tracks the gradient flow of the winning class backward to the final convolutional layer. It overlays a 
