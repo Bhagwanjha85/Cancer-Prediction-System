@@ -18,7 +18,7 @@ logo_img = Image.open(logo_path) if os.path.exists(logo_path) else None
 
 # Configure page
 st.set_page_config(
-    page_title="Prediction Portal - RMRIMS Virology Dept.",
+    page_title="Prediction Portal - RMNIHR Virology Dept.",
     page_icon=logo_img if logo_img else "https://cdn-icons-png.flaticon.com/512/2877/2877840.png",
     layout="wide"
 )
@@ -71,9 +71,7 @@ st.session_state["cancer_type"] = "Oral" if selected_type == "Oral Cavity" else 
 cancer_key = st.session_state["cancer_type"].lower()
 model_file_name = "best_model_oral.pth" if cancer_key == "oral" else "best_model_skin.pth"
 
-if predictor.models.get(cancer_key) is None:
-    st.sidebar.warning(f"Warning: No trained model file ({model_file_name}) was found for {selected_type}.")
-    st.sidebar.info("You can train this model using the train.py script.")
+
 
 st.sidebar.info(
     f"**Specialized {st.session_state['cancer_type']} Model Active**\n\n"
@@ -101,10 +99,7 @@ st.sidebar.info(
     "- High-resolution input is downscaled automatically."
 )
 
-# Check if model is loaded globally
-if predictor.model is None:
-    st.warning("Warning: No trained model files were found in your models/ directory.")
-    st.info("You can train the models using the train.py script.")
+
 
 # File uploader tailored to the active selection
 uploader_label = f"Upload a high-quality photograph of the { 'oral cavity / mouth' if cancer_key == 'oral' else 'skin lesion / mole' }"
