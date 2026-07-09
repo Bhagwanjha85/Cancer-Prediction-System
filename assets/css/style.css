@@ -13,41 +13,41 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Glassmorphic Cards */
 .glass-card {
-    background: rgba(255, 255, 255, 0.03);
+    background: rgba(255, 255, 255, 0.8) !important;
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(27, 40, 92, 0.1) !important;
     border-radius: 16px;
     padding: 24px;
     margin-bottom: 20px;
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 32px 0 rgba(27, 40, 92, 0.06) !important;
     transition: all 0.3s ease;
 }
 
 .glass-card:hover {
-    border-color: rgba(27, 40, 92, 0.6);
-    box-shadow: 0 12px 40px 0 rgba(27, 40, 92, 0.3);
+    border-color: rgba(27, 40, 92, 0.3) !important;
+    box-shadow: 0 12px 40px 0 rgba(27, 40, 92, 0.12) !important;
     transform: translateY(-2px);
 }
 
 /* Prediction Highlights */
 .result-box-normal {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1.5px solid rgba(255, 255, 255, 0.4);
+    background: rgba(27, 40, 92, 0.05) !important;
+    border: 1.5px solid rgba(27, 40, 92, 0.2) !important;
     border-radius: 12px;
     padding: 16px;
-    color: #ffffff;
+    color: #000000 !important;
     margin-bottom: 15px;
 }
 
 .result-box-cancerous {
-    background: #1b285c;
-    border: 1.5px solid #1b285c;
+    background: #1b285c !important;
+    border: 1.5px solid #1b285c !important;
     border-radius: 12px;
     padding: 16px;
-    color: #ffffff;
+    color: #ffffff !important;
     margin-bottom: 15px;
-    box-shadow: 0 4px 20px rgba(27, 40, 92, 0.3);
+    box-shadow: 0 4px 20px rgba(27, 40, 92, 0.2) !important;
 }
 
 /* Sidebar Styling */
@@ -71,9 +71,9 @@ section[data-testid="stSidebar"] {
 .stButton>button:hover {
     transform: translateY(-1px) !important;
     background: #ffffff !important;
-    color: #000000 !important;
-    border-color: #ffffff !important;
-    box-shadow: 0 6px 20px rgba(255, 255, 255, 0.1) !important;
+    color: #1b285c !important;
+    border-color: #1b285c !important;
+    box-shadow: 0 6px 20px rgba(27, 40, 92, 0.15) !important;
 }
 
 /* Badges */
@@ -110,20 +110,20 @@ section[data-testid="stSidebar"] {
 }
 
 /* ==========================================
-   Global Dark Theme Force & Light Override Fix
+   Global Light Theme Force & Accent Override
    ========================================== */
 .stApp, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {
-    background-color: #000000 !important;
+    background-color: #ffffff !important;
 }
 
-/* Force standard text to be white */
+/* Force standard text to be black */
 .stMarkdown p, .stMarkdown li, .stMarkdown span, .stMarkdown label, .stMarkdown td {
-    color: #ffffff !important;
+    color: #000000 !important;
 }
 
-/* Force heading tags to be white */
+/* Force heading tags to be dark blue theme color */
 .stMarkdown h1, .stMarkdown h2, .stMarkdown h4, .stMarkdown h5, .stMarkdown h6 {
-    color: #ffffff !important;
+    color: #1b285c !important;
 }
 
 /* Allow h3 to inherit color (e.g. customized color in card headings) */
@@ -133,24 +133,27 @@ section[data-testid="stSidebar"] {
 
 /* Glass card contents styling */
 .glass-card p, .glass-card li, .glass-card td, .glass-card span {
-    color: #E2E8F0 !important;
+    color: #1e293b !important;
 }
 
 /* Result box text colors force */
-.result-box-normal h1, .result-box-normal h2, .result-box-normal h3, .result-box-normal p,
+.result-box-normal h1, .result-box-normal h2, .result-box-normal h3, .result-box-normal p {
+    color: #000000 !important;
+}
+
 .result-box-cancerous h1, .result-box-cancerous h2, .result-box-cancerous h3, .result-box-cancerous p {
     color: #ffffff !important;
 }
 
 /* Input Fields (Text inputs, Textareas, Selectboxes) */
 div[data-baseweb="input"] input, div[data-baseweb="textarea"] textarea, div[data-baseweb="select"] select {
-    color: #ffffff !important;
-    background-color: #121212 !important;
+    color: #000000 !important;
+    background-color: #ffffff !important;
 }
 
 div[data-baseweb="input"], div[data-baseweb="textarea"], div[data-baseweb="select"] {
-    background-color: #121212 !important;
-    border-color: rgba(255, 255, 255, 0.1) !important;
+    background-color: #ffffff !important;
+    border-color: rgba(27, 40, 92, 0.2) !important;
 }
 
 /* Sidebar Overrides */

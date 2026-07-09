@@ -120,7 +120,7 @@ if evaluator.data is None:
 best_name = evaluator.get_best_model_name()
 metrics = evaluator.get_best_model_metrics()
 
-kpi_col1, kpi_col2, kpi_col3, kpi_col4, kpi_col5 = st.columns(5)
+kpi_col1, kpi_col2, kpi_col3, kpi_col4, kpi_col5 = st.columns([1.8, 1, 1, 1, 1.2])
 with kpi_col1:
     st.metric("Best Model", best_name)
 with kpi_col2:
