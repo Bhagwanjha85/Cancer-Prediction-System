@@ -37,7 +37,7 @@ def load_cached_predictor(version: str):
     importlib.reload(predict)
     return predict.CancerPredictor()
 
-predictor = load_cached_predictor("v_force_reload_gradcam_and_fp16")
+predictor = load_cached_predictor("v_force_reload_gradcam_conditional_highlighting")
 
 # Page title
 st.markdown(
