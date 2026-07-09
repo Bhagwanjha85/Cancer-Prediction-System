@@ -52,8 +52,8 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Sidebar Styling */
 section[data-testid="stSidebar"] {
-    background-color: #000000;
-    border-right: 1px solid rgba(255, 255, 255, 0.08);
+    background-color: #ffffff !important;
+    border-right: 1px solid rgba(0, 0, 0, 0.1) !important;
 }
 
 /* Buttons */
@@ -155,10 +155,28 @@ div[data-baseweb="input"], div[data-baseweb="textarea"], div[data-baseweb="selec
 
 /* Sidebar Overrides */
 section[data-testid="stSidebar"] {
-    background-color: #000000 !important;
-    border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+    background-color: #ffffff !important;
+    border-right: 1px solid rgba(0, 0, 0, 0.1) !important;
 }
 
-section[data-testid="stSidebar"] .stMarkdown p, section[data-testid="stSidebar"] span, section[data-testid="stSidebar"] label {
-    color: #ffffff !important;
+section[data-testid="stSidebar"] .stMarkdown p,
+section[data-testid="stSidebar"] .stMarkdown li,
+section[data-testid="stSidebar"] span,
+section[data-testid="stSidebar"] label,
+section[data-testid="stSidebar"] h1,
+section[data-testid="stSidebar"] h2,
+section[data-testid="stSidebar"] h3,
+section[data-testid="stSidebar"] h4,
+section[data-testid="stSidebar"] h5,
+section[data-testid="stSidebar"] h6,
+section[data-testid="stSidebar"] p,
+section[data-testid="stSidebar"] small,
+section[data-testid="stSidebar"] a,
+section[data-testid="stSidebar"] a span,
+section[data-testid="stSidebar"] li {
+    color: #000000 !important;
+}
+
+section[data-testid="stSidebar"] hr {
+    border-color: rgba(0, 0, 0, 0.1) !important;
 }
