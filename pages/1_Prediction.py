@@ -225,184 +225,184 @@ if uploaded_file is not None:
                         st.success("Diagnostic analysis complete!")
                         st.toast("Analysis finished!")
                     
-                    pred_class = pred_res["predicted_class"]
-                    confidence = pred_res["confidence"]
-                    is_cancer = pred_res["is_cancerous"]
-                    probs = pred_res["probabilities"]
-                    
-                    # For oral predictions, always merge Oral_Ulcer probability into Oral_Normal
-                    # so that the UI graph only shows Cancer and Normal classes.
-                    display_class = pred_class
-                    probs_for_graph = probs.copy()
-                    if "Oral_Normal" in probs_for_graph or "Oral_Ulcer" in probs_for_graph:
-                        probs_for_graph["Oral_Normal"] = probs_for_graph.get("Oral_Normal", 0.0) + probs_for_graph.get("Oral_Ulcer", 0.0)
-                        if "Oral_Ulcer" in probs_for_graph:
-                            probs_for_graph["Oral_Ulcer"] = 0.0
-                            
-                    if pred_class == "Oral_Ulcer":
-                        display_class = "Oral Normal (Benign Ulcer)"
-                    
-                    detected_tissue = "Oral Cavity" if "Oral" in pred_class else "Skin Lesion"
-                    
-                    # Display Results Highlights
-                    st.markdown("---")
-                    st.subheader("Primary Classification Result")
-                    
-                    res_class = "result-box-cancerous" if is_cancer else "result-box-normal"
-                    res_title = "MALIGNANCY SUSPECTED" if is_cancer else "BENIGN / HEALTHY STATUS DETECTED"
-                    
-                    st.markdown(
-                         f"""
-                         <div class="{res_class}">
-                             <h3 style="margin: 0 0 8px 0; font-weight: bold; font-family: 'Outfit';">{res_title}</h3>
-                             <p style="margin: 0; font-size: 1.15rem; line-height: 1.6;">
-                                 <b>Detected Tissue:</b> {detected_tissue}<br/>
-                                 <b>Predicted Diagnosis:</b> {display_class.replace('_', ' ')}<br/>
-                                 <b>Confidence Score:</b> {confidence * 100:.2f}%
-                             </p>
-                         </div>
-                         """,
-                         unsafe_allow_html=True
-                    )
-                    
-                    # Visualizations (Original, Heatmap, and Bar chart)
-                    st.subheader("Visual Diagnostics & Class Probabilities")
-                    
-                    viz_col1, viz_col2 = st.columns([1, 1.2])
-                    
-                    with viz_col1:
-                        # Grad-CAM Heatmap display
-                        if pred_res["superimposed"] is not None:
-                            st.write(" **Grad-CAM Saliency Map**")
-                            st.image(
-                                pred_res["superimposed"], 
-                                caption="Model Focus Highlight (Red indicates maximum influence)",
-                                use_container_width=True
-                            )
-                        else:
-                            st.info("Grad-CAM visualization is unavailable for this backbone.")
-                            
-                    with viz_col2:
-                        st.write(" **Class Confidence Distribution**")
-                        # Plot Matplotlib Bar chart
-                        if detected_tissue == "Oral Cavity":
-                            # Always hide Oral_Ulcer from the graph, as it is considered normal/benign
-                            active_classes = ["Oral_Cancer", "Oral_Normal"]
-                        else:
-                            active_classes = ["Skin_Cancer", "Skin_Normal"]
-                            
-                        prob_list = [probs_for_graph.get(c, 0.0) for c in active_classes]
-                        fig = plots.plot_probability_graph(np.array(prob_list), active_classes)
-                        st.pyplot(fig)
+                        pred_class = pred_res["predicted_class"]
+                        confidence = pred_res["confidence"]
+                        is_cancer = pred_res["is_cancerous"]
+                        probs = pred_res["probabilities"]
                         
-                    # Clinical Details and Recommendations
-                    st.markdown("---")
-                    st.subheader("Clinical Details & Recommendations")
-                    
-                    info = pred_res["medical_info"]
-                    
-                    info_tabs = st.tabs([
-                        "Clinical Description", 
-                        "Symptoms & Risks", 
-                        "Prevention & Treatment", 
-                        "Clinical Consultation"
-                    ])
-                    
-                    with info_tabs[0]:
-                        st.markdown(f"#### {info.get('title', 'Disease Details')}")
-                        st.write(info.get("description", "No description available."))
-                        
-                    with info_tabs[1]:
-                        col_sym, col_risk = st.columns(2)
-                        with col_sym:
-                            st.write("##### Possible Symptoms")
-                            for s in info.get("symptoms", []):
-                                st.markdown(f"- {s}")
-                            if not info.get("symptoms"):
-                                st.write("No typical symptoms listed.")
-                        with col_risk:
-                            st.write("##### Key Risk Factors")
-                            for r in info.get("risk_factors", []):
-                                st.markdown(f"- {r}")
-                            if not info.get("risk_factors"):
-                                st.write("No critical risk factors listed.")
+                        # For oral predictions, always merge Oral_Ulcer probability into Oral_Normal
+                        # so that the UI graph only shows Cancer and Normal classes.
+                        display_class = pred_class
+                        probs_for_graph = probs.copy()
+                        if "Oral_Normal" in probs_for_graph or "Oral_Ulcer" in probs_for_graph:
+                            probs_for_graph["Oral_Normal"] = probs_for_graph.get("Oral_Normal", 0.0) + probs_for_graph.get("Oral_Ulcer", 0.0)
+                            if "Oral_Ulcer" in probs_for_graph:
+                                probs_for_graph["Oral_Ulcer"] = 0.0
                                 
-                    with info_tabs[2]:
-                        col_prev, col_treat = st.columns(2)
-                        with col_prev:
-                            st.write("##### Preventive Actions")
-                            for p in info.get("preventive_measures", []):
-                                st.markdown(f"- {p}")
-                            if not info.get("preventive_measures"):
-                                st.write("No preventive guidelines listed.")
-                        with col_treat:
-                            st.write("##### Standard Treatments")
-                            for t in info.get("treatment_suggestions", []):
-                                st.markdown(f"- {t}")
-                            if not info.get("treatment_suggestions"):
-                                st.write("Consult a specialist for options.")
-                                
-                    with info_tabs[3]:
-                        st.write("##### Clinical Consultation Guidelines")
-                        st.write(info.get("consultation_advice", "Seek immediate expert consultation."))
+                        if pred_class == "Oral_Ulcer":
+                            display_class = "Oral Normal (Benign Ulcer)"
                         
-                    # Log prediction history to CSV
-                    record = {
-                        "timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                        "detection_type": f"{detected_tissue} Detection",
-                        "predicted_class": display_class,
-                        "confidence": confidence,
-                        "is_cancerous": is_cancer,
-                        "device_used": utils.check_gpu_support()["active_device"],
-                        "medical_info": info,
-                        "disclaimer": pred_res["disclaimer"]
-                    }
-                    utils.append_prediction_to_csv(os.path.join(config.BASE_DIR, "prediction_history.csv"), record)
-                    
-                    # PDF Export Block
-                    st.markdown("---")
-                    st.subheader("Export & Share Results")
-                    
-                    col_pdf, col_hist = st.columns(2)
-                    
-                    with col_pdf:
-                        st.write("Download a detailed clinical report of this analysis in PDF format.")
-                        # Generate PDF bytes
-                        pdf_bytes = utils.generate_pdf_report(record)
-                        st.download_button(
-                            label="Download Clinical PDF Report",
-                            data=pdf_bytes,
-                            file_name=f"Clinical_Detection_Report_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
-                            mime="application/pdf",
-                            use_container_width=True
+                        detected_tissue = "Oral Cavity" if "Oral" in pred_class else "Skin Lesion"
+                        
+                        # Display Results Highlights
+                        st.markdown("---")
+                        st.subheader("Primary Classification Result")
+                        
+                        res_class = "result-box-cancerous" if is_cancer else "result-box-normal"
+                        res_title = "MALIGNANCY SUSPECTED" if is_cancer else "BENIGN / HEALTHY STATUS DETECTED"
+                        
+                        st.markdown(
+                             f"""
+                             <div class="{res_class}">
+                                 <h3 style="margin: 0 0 8px 0; font-weight: bold; font-family: 'Outfit';">{res_title}</h3>
+                                 <p style="margin: 0; font-size: 1.15rem; line-height: 1.6;">
+                                     <b>Detected Tissue:</b> {detected_tissue}<br/>
+                                     <b>Predicted Diagnosis:</b> {display_class.replace('_', ' ')}<br/>
+                                     <b>Confidence Score:</b> {confidence * 100:.2f}%
+                                 </p>
+                             </div>
+                             """,
+                             unsafe_allow_html=True
                         )
                         
-                    with col_hist:
-                        st.write("View or download full local screening history in CSV format.")
-                        if st.button("Export Diagnostic History (CSV)", use_container_width=True):
-                            csv_path = os.path.join(config.BASE_DIR, "prediction_history.csv")
-                            if os.path.exists(csv_path):
-                                with open(csv_path, "r", encoding="utf-8") as f:
-                                    csv_data = f.read()
-                                st.download_button(
-                                    label="Save History File",
-                                    data=csv_data,
-                                    file_name="diagnostic_history.csv",
-                                    mime="text/csv",
+                        # Visualizations (Original, Heatmap, and Bar chart)
+                        st.subheader("Visual Diagnostics & Class Probabilities")
+                        
+                        viz_col1, viz_col2 = st.columns([1, 1.2])
+                        
+                        with viz_col1:
+                            # Grad-CAM Heatmap display
+                            if pred_res["superimposed"] is not None:
+                                st.write(" **Grad-CAM Saliency Map**")
+                                st.image(
+                                    pred_res["superimposed"], 
+                                    caption="Model Focus Highlight (Red indicates maximum influence)",
                                     use_container_width=True
                                 )
                             else:
-                                st.info("No prediction history recorded yet.")
+                                st.info("Grad-CAM visualization is unavailable for this backbone.")
                                 
-                    # Clinical Disclaimer Display
-                    st.markdown(
-                        f"""
-                        <div class="medical-disclaimer-banner">
-                            <h5 style="color: #EF4444; margin: 0 0 5px 0; font-weight: bold;">MEDICAL DISCLAIMER</h5>
-                            <p style="margin: 0; font-size: 0.85rem; color: #F3F4F6;">{pred_res['disclaimer']}</p>
-                        </div>
-                        """,
-                        unsafe_allow_html=True
-                    )
+                        with viz_col2:
+                            st.write(" **Class Confidence Distribution**")
+                            # Plot Matplotlib Bar chart
+                            if detected_tissue == "Oral Cavity":
+                                # Always hide Oral_Ulcer from the graph, as it is considered normal/benign
+                                active_classes = ["Oral_Cancer", "Oral_Normal"]
+                            else:
+                                active_classes = ["Skin_Cancer", "Skin_Normal"]
+                                
+                            prob_list = [probs_for_graph.get(c, 0.0) for c in active_classes]
+                            fig = plots.plot_probability_graph(np.array(prob_list), active_classes)
+                            st.pyplot(fig)
+                            
+                        # Clinical Details and Recommendations
+                        st.markdown("---")
+                        st.subheader("Clinical Details & Recommendations")
+                        
+                        info = pred_res["medical_info"]
+                        
+                        info_tabs = st.tabs([
+                            "Clinical Description", 
+                            "Symptoms & Risks", 
+                            "Prevention & Treatment", 
+                            "Clinical Consultation"
+                        ])
+                        
+                        with info_tabs[0]:
+                            st.markdown(f"#### {info.get('title', 'Disease Details')}")
+                            st.write(info.get("description", "No description available."))
+                            
+                        with info_tabs[1]:
+                            col_sym, col_risk = st.columns(2)
+                            with col_sym:
+                                st.write("##### Possible Symptoms")
+                                for s in info.get("symptoms", []):
+                                    st.markdown(f"- {s}")
+                                if not info.get("symptoms"):
+                                    st.write("No typical symptoms listed.")
+                            with col_risk:
+                                st.write("##### Key Risk Factors")
+                                for r in info.get("risk_factors", []):
+                                    st.markdown(f"- {r}")
+                                if not info.get("risk_factors"):
+                                    st.write("No critical risk factors listed.")
+                                    
+                        with info_tabs[2]:
+                            col_prev, col_treat = st.columns(2)
+                            with col_prev:
+                                st.write("##### Preventive Actions")
+                                for p in info.get("preventive_measures", []):
+                                    st.markdown(f"- {p}")
+                                if not info.get("preventive_measures"):
+                                    st.write("No preventive guidelines listed.")
+                            with col_treat:
+                                st.write("##### Standard Treatments")
+                                for t in info.get("treatment_suggestions", []):
+                                    st.markdown(f"- {t}")
+                                if not info.get("treatment_suggestions"):
+                                    st.write("Consult a specialist for options.")
+                                    
+                        with info_tabs[3]:
+                            st.write("##### Clinical Consultation Guidelines")
+                            st.write(info.get("consultation_advice", "Seek immediate expert consultation."))
+                            
+                        # Log prediction history to CSV
+                        record = {
+                            "timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                            "detection_type": f"{detected_tissue} Detection",
+                            "predicted_class": display_class,
+                            "confidence": confidence,
+                            "is_cancerous": is_cancer,
+                            "device_used": utils.check_gpu_support()["active_device"],
+                            "medical_info": info,
+                            "disclaimer": pred_res["disclaimer"]
+                        }
+                        utils.append_prediction_to_csv(os.path.join(config.BASE_DIR, "prediction_history.csv"), record)
+                        
+                        # PDF Export Block
+                        st.markdown("---")
+                        st.subheader("Export & Share Results")
+                        
+                        col_pdf, col_hist = st.columns(2)
+                        
+                        with col_pdf:
+                            st.write("Download a detailed clinical report of this analysis in PDF format.")
+                            # Generate PDF bytes
+                            pdf_bytes = utils.generate_pdf_report(record)
+                            st.download_button(
+                                label="Download Clinical PDF Report",
+                                data=pdf_bytes,
+                                file_name=f"Clinical_Detection_Report_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
+                                mime="application/pdf",
+                                use_container_width=True
+                            )
+                            
+                        with col_hist:
+                            st.write("View or download full local screening history in CSV format.")
+                            if st.button("Export Diagnostic History (CSV)", use_container_width=True):
+                                csv_path = os.path.join(config.BASE_DIR, "prediction_history.csv")
+                                if os.path.exists(csv_path):
+                                    with open(csv_path, "r", encoding="utf-8") as f:
+                                        csv_data = f.read()
+                                    st.download_button(
+                                        label="Save History File",
+                                        data=csv_data,
+                                        file_name="diagnostic_history.csv",
+                                        mime="text/csv",
+                                        use_container_width=True
+                                    )
+                                else:
+                                    st.info("No prediction history recorded yet.")
+                                    
+                        # Clinical Disclaimer Display
+                        st.markdown(
+                            f"""
+                            <div class="medical-disclaimer-banner">
+                                <h5 style="color: #EF4444; margin: 0 0 5px 0; font-weight: bold;">MEDICAL DISCLAIMER</h5>
+                                <p style="margin: 0; font-size: 0.85rem; color: #F3F4F6;">{pred_res['disclaimer']}</p>
+                            </div>
+                            """,
+                            unsafe_allow_html=True
+                        )
 else:
     st.info("Please upload an image using the file uploader above to begin the screening analysis.")

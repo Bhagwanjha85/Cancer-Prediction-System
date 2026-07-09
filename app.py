@@ -10,7 +10,7 @@ logo_img = Image.open(logo_path) if os.path.exists(logo_path) else None
 
 # Set page config FIRST
 st.set_page_config(
-    page_title="RMRIMS Virology Dept. - AI Cancer Detection Portal",
+    page_title="RMNIHR Virology Dept. - AI Cancer Detection Portal",
     page_icon=logo_img if logo_img else "https://cdn-icons-png.flaticon.com/512/2877/2877840.png",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -27,7 +27,7 @@ if logo_img:
     st.sidebar.image(logo_img, width=180)
 else:
     st.sidebar.image("https://cdn-icons-png.flaticon.com/512/2877/2877840.png", width=70)
-st.sidebar.title("RMRIMS Virology Dept.")
+st.sidebar.title("RMNIHR Virology Dept.")
 st.sidebar.markdown("*Next-Gen Deep Learning Diagnostics*")
 
 st.sidebar.markdown("---")
