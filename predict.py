@@ -79,6 +79,11 @@ class CancerPredictor:
                 arch_name = meta_package.get("architecture", "DenseNet121")
                 state_dict = meta_package.get("state_dict")
                 
+                # Convert state dict back to float32 for CPU/standard loading compatibility
+                for k, v in state_dict.items():
+                    if isinstance(v, torch.Tensor):
+                        state_dict[k] = v.float()
+                
                 # Check if checkpoint has RNN modules to support legacy architectures
                 use_rnn = any("rnn" in k for k in state_dict.keys())
                 

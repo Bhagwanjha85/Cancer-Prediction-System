@@ -24,6 +24,7 @@ class GradCAM:
         else:
             self.target_layer = target_layer
             
+            
         self.gradients = None
         self.activations = None
         self.handlers = []

@@ -71,12 +71,6 @@ st.session_state["cancer_type"] = "Oral" if selected_type == "Oral Cavity" else 
 cancer_key = st.session_state["cancer_type"].lower()
 model_file_name = "best_model_oral.pth" if cancer_key == "oral" else "best_model_skin.pth"
 
-st.sidebar.markdown("### Debug: Files on disk")
-if os.path.exists(config.MODELS_DIR):
-    st.sidebar.write(os.listdir(config.MODELS_DIR))
-else:
-    st.sidebar.write("models/ directory does not exist!")
-
 st.sidebar.info(
     f"**Specialized {st.session_state['cancer_type']} Model Active**\n\n"
     f"The portal will now accept and analyze {st.session_state['cancer_type']} images specifically using the dedicated model."
