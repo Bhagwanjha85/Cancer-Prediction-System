@@ -32,6 +32,7 @@ class CancerPredictor:
         self.classes = {}
         self.architectures = {}
         self.use_rnn_flags = {}
+        self.load_errors = {}
         
         # Warm up/load models if available
         self.get_model("oral")
@@ -92,10 +93,14 @@ class CancerPredictor:
                         class_names = pickle.load(f)
                 logger.info(f"Loaded class names for {cancer_type}: {class_names}")
             except Exception as e:
-                logger.error(f"Error loading {cancer_type} PyTorch model: {str(e)}")
+                err_msg = f"{str(e)} (File size: {os.path.getsize(model_path) / (1024*1024):.4f} MB)" if os.path.exists(model_path) else "File not found"
+                logger.error(f"Error loading {cancer_type} PyTorch model: {err_msg}")
+                self.load_errors[cancer_type] = err_msg
                 model = None
         else:
+            err_msg = "Model file does not exist on disk."
             logger.warning(f"No trained model found for {cancer_type} at {model_path}.")
+            self.load_errors[cancer_type] = err_msg
             
         self.models[cancer_type] = model
         self.classes[cancer_type] = class_names
@@ -160,7 +165,8 @@ class CancerPredictor:
             cancer_type = selected_detection_type.lower()
             model, class_names, arch_name = self.get_model(cancer_type)
             if model is None:
-                result["message"] = f"Machine Learning model for {selected_detection_type} is not available. Please train the model."
+                err = self.load_errors.get(cancer_type, "Unknown model load error")
+                result["message"] = f"Machine Learning model for {selected_detection_type} is not available. Details: {err}. Please train the model."
                 return result
             
             # Run inference
