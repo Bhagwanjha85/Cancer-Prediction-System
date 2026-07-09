@@ -43,24 +43,26 @@ class GradCAM:
 
     def _register_hooks(self):
         """
-        Registers forward and backward hooks to capture activations and gradients.
+        Registers forward hooks to capture activations and registers a tensor-level 
+        backward hook to capture gradients.
         """
         def forward_hook(module, input, output):
+            # Save activations
             self.activations = output.detach()
-
-        def backward_hook(module, grad_input, grad_output):
-            self.gradients = grad_output[0].detach()
+            
+            # Register a hook directly on the output tensor to capture its gradient
+            # when backward() is called. This is extremely robust and avoids
+            # module-level backward hook inplace/view errors.
+            def tensor_backward_hook(grad):
+                self.gradients = grad.detach()
+                
+            output.register_hook(tensor_backward_hook)
 
         self.handlers.append(self.target_layer.register_forward_hook(forward_hook))
-        # Handle PyTorch version differences for backward hooks safely
-        if hasattr(self.target_layer, "register_full_backward_hook"):
-            self.handlers.append(self.target_layer.register_full_backward_hook(backward_hook))
-        else:
-            self.handlers.append(self.target_layer.register_backward_hook(backward_hook))
 
     def remove_hooks(self):
         """
-        Removes all registered hooks from the model.
+        Removes all registered forward hooks from the model.
         """
         for handler in self.handlers:
             handler.remove()

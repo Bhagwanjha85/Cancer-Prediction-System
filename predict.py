@@ -1,4 +1,5 @@
 import os
+import cv2
 import pickle
 import logging
 import numpy as np
