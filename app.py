@@ -10,7 +10,7 @@ logo_img = Image.open(logo_path) if os.path.exists(logo_path) else None
 
 # Set page config FIRST
 st.set_page_config(
-    page_title="OncoVision - AI Cancer Detection Portal",
+    page_title="RMRIMS Virology Dept. - AI Cancer Detection Portal",
     page_icon=logo_img if logo_img else "https://cdn-icons-png.flaticon.com/512/2877/2877840.png",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -24,10 +24,10 @@ if os.path.exists(css_path):
 
 # Diagnostic Sidebar Info
 if logo_img:
-    st.sidebar.image(logo_img, width=70)
+    st.sidebar.image(logo_img, width=180)
 else:
     st.sidebar.image("https://cdn-icons-png.flaticon.com/512/2877/2877840.png", width=70)
-st.sidebar.title("OncoVision Portal")
+st.sidebar.title("RMRIMS Virology Dept.")
 st.sidebar.markdown("*Next-Gen Deep Learning Diagnostics*")
 
 st.sidebar.markdown("---")
@@ -56,7 +56,7 @@ st.markdown(
     """
     <div style="text-align: center; padding: 20px 0px 40px 0px;">
         <h1 style="font-size: 3rem; margin-bottom: 10px; background: linear-gradient(135deg, #ffffff 0%, #1b285c 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
-            OncoVision: Deep Learning Cancer Detection Portal
+            RMRIMS Virology Dept.: Deep Learning Cancer Detection Portal
         </h1>
         <p style="font-size: 1.2rem; color: #94A3B8; max-width: 800px; margin: 0 auto;">
             An advanced, real-time medical screening tool leveraging transfer learning and explainable AI (Grad-CAM) to identify Oral and Skin Malignancies.

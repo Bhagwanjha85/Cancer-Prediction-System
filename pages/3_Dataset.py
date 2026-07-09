@@ -16,7 +16,7 @@ logo_img = Image.open(logo_path) if os.path.exists(logo_path) else None
 
 # Configure page
 st.set_page_config(
-    page_title="Dataset Information - OncoVision",
+    page_title="Dataset Information - RMRIMS Virology Dept.",
     page_icon=logo_img if logo_img else "https://cdn-icons-png.flaticon.com/512/2877/2877840.png",
     layout="wide"
 )
@@ -118,7 +118,7 @@ st.markdown("---")
 
 # 2. Dataset Sample Visualizer
 st.subheader("Target Category Sample Image Grid")
-st.write("Representative processed training snapshots from the OncoVision database:")
+st.write("Representative processed training snapshots from the RMRIMS Virology Dept. database:")
 
 grid_cols = st.columns(4)
 
@@ -151,7 +151,7 @@ for idx, (class_name, (cat, subcat)) in enumerate(categories.items()):
 # 3. Model Benchmark Comparison Section
 st.markdown("---")
 st.subheader("Benchmark Comparison of Deep Learning Architectures")
-st.write("Comparative analysis of the evaluated models for OncoVision:")
+st.write("Comparative analysis of the evaluated models for RMRIMS Virology Dept.:")
 
 benchmark_data = {
     "Architecture": ["ConvNeXt (CNN-RNN)", "EfficientNetV2 (CNN-RNN)", "DenseNet121", "ResNet50", "MobileNetV3"],
