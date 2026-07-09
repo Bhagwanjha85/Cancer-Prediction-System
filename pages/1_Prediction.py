@@ -30,14 +30,14 @@ if os.path.exists(css_path):
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 @st.cache_resource(show_spinner="Loading Cancer Diagnostic Models...")
-def load_cached_predictor():
+def load_cached_predictor(version: str):
     # Force reload of predict module on initialization to pick up any signature changes
     import importlib
     import predict
     importlib.reload(predict)
     return predict.CancerPredictor()
 
-predictor = load_cached_predictor()
+predictor = load_cached_predictor("v_force_reload_gradcam_and_fp16")
 
 # Page title
 st.markdown(
@@ -99,15 +99,29 @@ st.sidebar.info(
 
 
 
-# File uploader tailored to the active selection
-uploader_label = f"Upload a high-quality photograph of the { 'oral cavity / mouth' if cancer_key == 'oral' else 'skin lesion / mole' }"
-uploader_help = f"Make sure the photograph is in focus, well-lit, and close to the { 'oral tissue.' if cancer_key == 'oral' else 'skin lesion.' }"
-
-uploaded_file = st.file_uploader(
-    uploader_label,
-    type=["png", "jpg", "jpeg", "webp"],
-    help=uploader_help
+# Input method selection to support direct camera capture in the app context
+input_method = st.radio(
+    "Select Input Method",
+    options=["Upload Image File", "Capture Photo from Camera"],
+    horizontal=True,
+    help="Select whether to upload an existing image file from your device or capture a new photo directly using your webcam/camera."
 )
+
+uploaded_file = None
+if input_method == "Upload Image File":
+    uploader_label = f"Upload a high-quality photograph of the { 'oral cavity / mouth' if cancer_key == 'oral' else 'skin lesion / mole' }"
+    uploader_help = f"Make sure the photograph is in focus, well-lit, and close to the { 'oral tissue.' if cancer_key == 'oral' else 'skin lesion.' }"
+    uploaded_file = st.file_uploader(
+        uploader_label,
+        type=["png", "jpg", "jpeg", "webp"],
+        help=uploader_help
+    )
+else:
+    camera_label = f"Capture a clear photograph of the { 'oral cavity / mouth' if cancer_key == 'oral' else 'skin lesion / mole' }"
+    uploaded_file = st.camera_input(
+        camera_label,
+        help="Position the camera close to the area of interest under good lighting before clicking capture."
+    )
 
 if uploaded_file is not None:
     # 1. Size Validation

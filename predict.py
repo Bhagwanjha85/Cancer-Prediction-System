@@ -255,27 +255,27 @@ class CancerPredictor:
             
             # 4. Generate Grad-CAM heatmaps
             try:
-                if is_cancerous:
-                    with torch.enable_grad():
-                        cam_input = processed_tensor.clone().detach().requires_grad_(True)
-                        
-                        # Target the last convolution layer of the model backbone
-                        grad_cam = GradCAM(model)
-                        heatmap = grad_cam.generate_heatmap(cam_input, pred_idx)
-                        
-                        # Clean hooks
-                        grad_cam.remove_hooks()
-                        
-                        colored_heatmap, superimposed = GradCAM.overlay_heatmap(heatmap, original_resized)
-                        result["heatmap"] = colored_heatmap
-                        result["superimposed"] = superimposed
-                else:
-                    # If normal/benign, show original image without any heatmap overlay
-                    result["heatmap"] = None
-                    result["superimposed"] = cv2.cvtColor(original_resized, cv2.COLOR_BGR2RGB)
+                with torch.enable_grad():
+                    cam_input = processed_tensor.clone().detach().requires_grad_(True)
+                    
+                    # Target the last convolution layer of the model backbone
+                    grad_cam = GradCAM(model)
+                    heatmap = grad_cam.generate_heatmap(cam_input, pred_idx)
+                    
+                    # Clean hooks
+                    grad_cam.remove_hooks()
+                    
+                    colored_heatmap, superimposed = GradCAM.overlay_heatmap(heatmap, original_resized)
+                    result["heatmap"] = colored_heatmap
+                    result["superimposed"] = superimposed
             except Exception as cam_err:
                 logger.error(f"Grad-CAM generation failed: {str(cam_err)}")
                 result["cam_error"] = str(cam_err)
+                try:
+                    result["heatmap"] = None
+                    result["superimposed"] = cv2.cvtColor(original_resized, cv2.COLOR_BGR2RGB)
+                except Exception:
+                    pass
                 
             # 5. Fetch disease guidelines and advice
             if pred_class in medical_info.MEDICAL_INFO:
