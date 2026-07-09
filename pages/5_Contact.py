@@ -4,7 +4,7 @@ from PIL import Image
 import config
 
 # Load Logo Image
-logo_path = os.path.join(config.ASSETS_DIR, "images", "logo.jpeg")
+logo_path = os.path.join(config.ASSETS_DIR, "images", "logo-main.png")
 logo_img = Image.open(logo_path) if os.path.exists(logo_path) else None
 
 # Configure page
