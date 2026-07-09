@@ -139,6 +139,7 @@ class CancerPredictor:
             "probabilities": {},
             "heatmap": None,
             "superimposed": None,
+            "cam_error": None,
             "medical_info": {},
             "disclaimer": medical_info.MEDICAL_DISCLAIMER
         }
@@ -274,7 +275,7 @@ class CancerPredictor:
                     result["superimposed"] = cv2.cvtColor(original_resized, cv2.COLOR_BGR2RGB)
             except Exception as cam_err:
                 logger.error(f"Grad-CAM generation failed: {str(cam_err)}")
-                # Continue without Grad-CAM
+                result["cam_error"] = str(cam_err)
                 
             # 5. Fetch disease guidelines and advice
             if pred_class in medical_info.MEDICAL_INFO:

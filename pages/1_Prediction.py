@@ -278,7 +278,11 @@ if uploaded_file is not None:
                                     use_container_width=True
                                 )
                             else:
-                                st.info("Grad-CAM visualization is unavailable for this backbone.")
+                                cam_err = pred_res.get("cam_error")
+                                if cam_err:
+                                    st.info(f"Grad-CAM visualization is unavailable for this backbone. Details: {cam_err}")
+                                else:
+                                    st.info("Grad-CAM visualization is unavailable for this backbone.")
                                 
                         with viz_col2:
                             st.write(" **Class Confidence Distribution**")
