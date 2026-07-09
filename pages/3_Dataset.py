@@ -5,14 +5,19 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import cv2
+from PIL import Image
 
 import config
 import dataset_loader
 
+# Load Logo Image
+logo_path = os.path.join(config.ASSETS_DIR, "images", "logo.jpeg")
+logo_img = Image.open(logo_path) if os.path.exists(logo_path) else None
+
 # Configure page
 st.set_page_config(
     page_title="Dataset Information - OncoVision",
-    page_icon="https://cdn-icons-png.flaticon.com/512/2877/2877840.png",
+    page_icon=logo_img if logo_img else "https://cdn-icons-png.flaticon.com/512/2877/2877840.png",
     layout="wide"
 )
 

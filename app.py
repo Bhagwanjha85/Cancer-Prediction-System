@@ -1,12 +1,17 @@
 import os
 import streamlit as st
+from PIL import Image
 import config
 import utils
+
+# Load Logo Image
+logo_path = os.path.join(config.ASSETS_DIR, "images", "logo.jpeg")
+logo_img = Image.open(logo_path) if os.path.exists(logo_path) else None
 
 # Set page config FIRST
 st.set_page_config(
     page_title="OncoVision - AI Cancer Detection Portal",
-    page_icon="https://cdn-icons-png.flaticon.com/512/2877/2877840.png",
+    page_icon=logo_img if logo_img else "https://cdn-icons-png.flaticon.com/512/2877/2877840.png",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -18,7 +23,10 @@ if os.path.exists(css_path):
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 # Diagnostic Sidebar Info
-st.sidebar.image("https://cdn-icons-png.flaticon.com/512/2877/2877840.png", width=70)
+if logo_img:
+    st.sidebar.image(logo_img, width=70)
+else:
+    st.sidebar.image("https://cdn-icons-png.flaticon.com/512/2877/2877840.png", width=70)
 st.sidebar.title("OncoVision Portal")
 st.sidebar.markdown("*Next-Gen Deep Learning Diagnostics*")
 

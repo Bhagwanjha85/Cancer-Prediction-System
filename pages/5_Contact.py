@@ -1,11 +1,16 @@
 import os
 import streamlit as st
+from PIL import Image
 import config
+
+# Load Logo Image
+logo_path = os.path.join(config.ASSETS_DIR, "images", "logo.jpeg")
+logo_img = Image.open(logo_path) if os.path.exists(logo_path) else None
 
 # Configure page
 st.set_page_config(
     page_title="Contact & Developer Details - OncoVision",
-    page_icon="https://cdn-icons-png.flaticon.com/512/2877/2877840.png",
+    page_icon=logo_img if logo_img else "https://cdn-icons-png.flaticon.com/512/2877/2877840.png",
     layout="wide"
 )
 
