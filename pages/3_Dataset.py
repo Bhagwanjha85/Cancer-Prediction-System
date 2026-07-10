@@ -158,8 +158,7 @@ benchmark_data = {
     "Accuracy": [0.978, 0.964, 0.953, 0.941, 0.892],
     "F1-Score": [0.976, 0.961, 0.949, 0.938, 0.887],
     "Inference Speed (ms)": [28, 24, 38, 32, 12],
-    "Model Size (MB)": [114, 85, 33, 98, 16],
-    "Recommendation": ["⭐⭐⭐⭐⭐⭐ (Option 2: Best Accuracy)", "⭐⭐⭐⭐⭐ (Option 1: Best Overall)", "⭐⭐⭐⭐ (High Accuracy)", "⭐⭐⭐⭐ (Stable)", "⭐⭐⭐ (Lightweight)"]
+    "Model Size (MB)": [114, 85, 33, 98, 16]
 }
 
 df_benchmark = pd.DataFrame(benchmark_data)

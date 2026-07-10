@@ -89,8 +89,8 @@ class GradCAM:
         if self.gradients is None or self.activations is None:
             raise RuntimeError("Hook variables failed to capture. Check hook registrations.")
             
-        gradients = self.gradients[0]  # [C, H, W]
-        activations = self.activations[0]  # [C, H, W]
+        gradients = self.gradients[0]  
+        activations = self.activations[0]  
         
         # Channel-wise global average pooling of gradients
         weights = torch.mean(gradients, dim=(1, 2))  # [C]
