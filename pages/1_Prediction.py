@@ -83,11 +83,7 @@ apply_denoising = st.sidebar.checkbox(
     help="Reduces background noise while preserving lesion edge boundaries for cleaner input. Off by default to match neural network training patterns."
 )
 
-skip_validation_check = st.sidebar.checkbox(
-    "Bypass Pre-Validation Filters",
-    value=False,
-    help="Force model prediction even if the input image is flagged as non-human or incorrect tissue type by pre-validation filters."
-)
+skip_validation_check = False
 
 st.sidebar.markdown("---")
 st.sidebar.info(
