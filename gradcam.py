@@ -56,7 +56,10 @@ class GradCAM:
             def tensor_backward_hook(grad):
                 self.gradients = grad.detach()
                 
-            output.register_hook(tensor_backward_hook)
+            if output.requires_grad:
+                output.register_hook(tensor_backward_hook)
+            else:
+                logger.warning("Grad-CAM target layer output does not require gradients. Backward hook skipped.")
 
         self.handlers.append(self.target_layer.register_forward_hook(forward_hook))
 

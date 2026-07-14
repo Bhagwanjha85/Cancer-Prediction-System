@@ -198,12 +198,15 @@ class CancerPredictor:
                     pred_class = "Oral_Cancer"
                     confidence = prob_cancer
                     is_cancerous = True
+                    pred_idx = cancer_idx
                 else:
                     is_cancerous = False
                     if prob_ulcer >= prob_normal:
                         pred_class = "Oral_Ulcer"
+                        pred_idx = ulcer_idx
                     else:
                         pred_class = "Oral_Normal"
+                        pred_idx = normal_idx
                     confidence = prob_combined_normal
             else:
                 pred_idx = int(np.argmax(probs))
@@ -261,14 +264,14 @@ class CancerPredictor:
                         
                         # Target the last convolution layer of the model backbone
                         grad_cam = GradCAM(model)
-                        heatmap = grad_cam.generate_heatmap(cam_input, pred_idx)
-                        
-                        # Clean hooks
-                        grad_cam.remove_hooks()
-                        
-                        colored_heatmap, superimposed = GradCAM.overlay_heatmap(heatmap, original_resized)
-                        result["heatmap"] = colored_heatmap
-                        result["superimposed"] = superimposed
+                        try:
+                            heatmap = grad_cam.generate_heatmap(cam_input, pred_idx)
+                            colored_heatmap, superimposed = GradCAM.overlay_heatmap(heatmap, original_resized)
+                            result["heatmap"] = colored_heatmap
+                            result["superimposed"] = superimposed
+                        finally:
+                            # Always clean hooks to prevent memory leaks and backward hook errors
+                            grad_cam.remove_hooks()
                 else:
                     # If normal/benign, show original image without any heatmap overlay
                     result["heatmap"] = None
