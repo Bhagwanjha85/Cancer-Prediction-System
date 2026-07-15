@@ -10,6 +10,50 @@ from typing import Tuple
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("BodyDetector")
 
+# Large comprehensive set of strictly forbidden non-medical/non-tissue classes
+FORBIDDEN_CLASSES = {
+    # Animals
+    "dog", "cat", "bird", "fish", "horse", "cow", "sheep", "elephant", "lion", "tiger", "bear", "deer", 
+    "rabbit", "mouse", "chicken", "pig", "monkey", "gorilla", "panda", "fox", "wolf", "camel", "kangaroo", 
+    "koala", "penguin", "shark", "whale", "dolphin", "turtle", "crocodile", "dinosaur", "squirrel", 
+    "snake", "frog", "toad", "lizard", "insect", "butterfly", "bee", "spider", "ant", "tick", "crab", "lobster",
+    # Vehicles & Machinery
+    "car", "truck", "airplane", "boat", "bicycle", "motorcycle", "train", "bus", "cab", "wagon", "ship",
+    "tractor", "helicopter", "rocket", "engine", "wheel",
+    # Electronics & Office
+    "laptop", "keyboard", "computer", "phone", "television", "microwave", "toaster", "refrigerator", 
+    "vacuum", "printer", "modem", "screen", "monitor", "projector", "camera", "copier",
+    # Buildings & Outdoors
+    "building", "house", "mountain", "valley", "cliff", "alp", "seashore", "bridge", "monument", "castle", 
+    "temple", "church", "barn", "greenhouse", "volcano", "forest", "tree", "grass", "leaf", "plant", "flower",
+    "lake", "river", "ocean", "sea", "beach", "sand", "rock", "stone", "cloud", "sun", "moon", "star",
+    # Furniture & Household
+    "desk", "bed", "sofa", "table", "chair", "cushion", "pillow", "wardrobe", "bookcase", "cabinet", "chest", 
+    "clock", "lamp", "candle", "mirror", "window", "door", "wall", "floor", "carpet", "rug", "curtain", 
+    "bath", "bathtub", "toilet", "sink", "soap dispenser", "towel", "blanket",
+    # Musical Instruments & Sports
+    "guitar", "piano", "drum", "violin", "trumpet", "flute", "ball", "racket", "bat", "glove", "surfboard",
+    "skateboard", "ski", "snowboard",
+    # Tools & Hardware
+    "hammer", "screwdriver", "wrench", "pliers", "saw", "axe", "shovel", "rake", "scissors",
+    # Clothing, Apparel & Accessories (Selfie / Full Body)
+    "t-shirt", "jersey", "suit", "coat", "necktie", "cardigan", "sweatshirt", "cloak", "gown", "academic gown", 
+    "kimono", "pajamas", "pajama", "swimming trunks", "sunglasses", "sunglass", "glasses", "spectacles", 
+    "eyeglasses", "groom", "bridegroom", "bride", "wig", "diaper", "mannequin", "jeans", "jean", "sock", 
+    "shoe", "sandal", "boot", "backpack", "umbrella", "seat belt", "apron", "poncho", "miniskirt", "skirt", 
+    "dress", "brassiere", "maillot", "bikini", "uniform", "velvet", "wool", "hat", "cap", "bonnet", "helmet",
+    "purse", "wallet", "bag", "handbag",
+    # Baby / Child items (Cradles, High chairs, Toys)
+    "cradle", "crib", "high chair", "baby buggy", "plaything", "toy", "teddy", "doll", "pacifier",
+    # Food & Kitchen (Except allowed ones)
+    "banana", "apple", "orange", "lemon", "pineapple", "strawberry", "pomegranate", "mushroom", "pizza", 
+    "burger", "bread", "sandwich", "cookie", "cake", "chocolate", "meat", "salad", "wine", "beer", "juice", 
+    "milk", "cup", "glass", "plate", "bowl", "fork", "spoon", "knife", "bottle", "can", "pot", "pan",
+    # General Person Indicators
+    "people", "person", "child", "boy", "girl", "baby", "infant", "toddler", "teenager", 
+    "adult", "man", "woman"
+}
+
 class BodyDetector:
     """
     Checks if an uploaded image is a human body part/medical image in PyTorch,
@@ -74,34 +118,15 @@ class BodyDetector:
             top10_prob, top10_catid = torch.topk(probabilities, 10)
             decoded = [(self.categories[idx.item()].lower(), prob.item()) for idx, prob in zip(top10_catid, top10_prob)]
             
-            strict_non_human = {
-                "dog", "cat", "bird", "fish", "horse", "cow", "sheep", "elephant", "lion", "tiger", "bear", "deer", 
-                "rabbit", "mouse", "chicken", "pig", "monkey", "gorilla", "panda", "fox", "wolf", "camel", "kangaroo", 
-                "koala", "penguin", "shark", "whale", "dolphin", "turtle", "crocodile", "dinosaur", "squirrel", 
-                "car", "truck", "airplane", "boat", "bicycle", "motorcycle", "train", "bus", "cab", "wagon", "ship",
-                "laptop", "keyboard", "computer", "phone", "television", "microwave", "toaster", "refrigerator", 
-                "vacuum", "printer", "modem", "screen", "monitor",
-                "building", "house", "mountain", "valley", "cliff", "alp", "seashore", "bridge", "monument", "castle", 
-                "temple", "church", "barn", "greenhouse", "volcano",
-                "desk", "bed", "sofa", "table", "chair",
-                "guitar", "piano", "drum", "violin", "trumpet", "flute", "ball", "racket", "bat", "glove", 
-                "hammer", "screwdriver", "wrench", "pliers", "saw", "axe", "shovel", "rake", "scissors"
-            }
+            # Reject if any of the top 3 predictions are forbidden non-medical classes
+            for name, prob in decoded[:3]:
+                if prob > 0.05:
+                    class_words = name.replace(",", "").replace("-", " ").split(" ")
+                    for word in class_words:
+                        if word in FORBIDDEN_CLASSES:
+                            logger.warning(f"Rejected: forbidden class detected in top predictions: '{name}' ({prob:.4f})")
+                            return False
             
-            non_human_score = 0.0
-            for class_name, prob in decoded:
-                class_words = class_name.replace(",", "").replace("-", " ").split(" ")
-                is_non_human = any(word in strict_non_human for word in class_words)
-                if is_non_human:
-                    non_human_score += prob
-                    if prob > 0.15:
-                        logger.warning(f"Strict object rejection: '{class_name}' with confidence {prob:.4f}")
-                        return False
-            
-            if non_human_score > 0.25:
-                logger.warning(f"Cumulative non-human rejection: score {non_human_score:.4f} exceeds 0.25 threshold")
-                return False
-                
             return True
             
         except Exception as e:
@@ -140,7 +165,7 @@ class BodyDetector:
             
             if len(faces) > 0 or len(profiles) > 0 or len(eyes) > 1:
                 logger.warning(f"Selfie rejected by Haar Cascade: {len(faces)} frontal faces, {len(profiles)} profile faces, {len(eyes)} eyes detected.")
-                return False, "Please upload a relevant image. Selfies and full portraits are not allowed."
+                return False, "Please upload a relevant close-up medical image. Selfies and full portraits are not allowed."
                 
             # 2. ImageNet Class-based validation
             img_rgb = cv2.cvtColor(image_np, cv2.COLOR_BGR2RGB)
@@ -157,24 +182,14 @@ class BodyDetector:
             
             logger.info(f"Tissue verification Top 10: {list(zip(top10_names, top10_probs))}")
             
-            # Selfie & Scene indicators (clothing, eyewear, background setups, baby/infant objects)
-            selfie_indicators = {
-                "t-shirt", "jersey", "suit", "coat", "necktie", "cardigan", "sweatshirt", "cloak", 
-                "trench coat", "gown", "academic gown", "kimono", "pajamas", "pajama", "swimming trunks", 
-                "sunglasses", "sunglass", "glasses", "spectacles", "eyeglasses", "groom", "bridegroom",
-                "wig", "desk", "monitor", "screen", "keyboard", "office", "room", "sofa", "studio",
-                "diaper", "cradle", "crib", "high chair", "baby buggy", "plaything", "toy", "mannequin", 
-                "jeans", "jean", "sock", "shoe", "sandal", "boot", "backpack", "umbrella", "seat belt",
-                "people", "person", "child", "boy", "girl", "baby", "infant", "toddler", "teenager", 
-                "adult", "man", "woman"
-            }
-            
-            for idx in range(3):
-                name = top10_names[idx]
-                prob = top10_probs[idx]
-                if prob > 0.15 and any(ind in name for ind in selfie_indicators):
-                    logger.warning(f"Selfie/Portrait indicator matched: '{name}' ({prob:.4f})")
-                    return False, "Please upload a relevant image. Selfies and full portraits are not allowed."
+            # Reject if any of the top 3 predictions are forbidden non-medical classes (with low confidence threshold)
+            for name, prob in zip(top10_names[:3], top10_probs[:3]):
+                if prob > 0.05:
+                    class_words = name.replace(",", "").replace("-", " ").split(" ")
+                    for word in class_words:
+                        if word in FORBIDDEN_CLASSES:
+                            logger.warning(f"Tissue check rejected forbidden class: '{name}' ({prob:.4f})")
+                            return False, f"Please upload a relevant close-up medical image. Non-medical objects/scenes ({name}) are not allowed."
             
             # 3. Top-1 ImageNet Whitelist check to reject non-human/non-medical objects and animals
             top1_name = top10_names[0]
