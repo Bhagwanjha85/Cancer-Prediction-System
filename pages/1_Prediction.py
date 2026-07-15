@@ -37,7 +37,7 @@ def load_cached_predictor(version: str):
     importlib.reload(predict)
     return predict.CancerPredictor()
 
-predictor = load_cached_predictor("v_force_reload_gradcam_conditional_highlighting_v2")
+predictor = load_cached_predictor("v_force_reload_gradcam_conditional_highlighting_v3")
 
 # Page title
 st.markdown(
@@ -149,11 +149,11 @@ if uploaded_file is not None:
             original_resized = cv2.resize(img_np, (224, 224))
             
             if not skip_validation_check:
-                is_human = predictor.body_detector.is_human_body(original_resized)
+                is_human = predictor.body_detector.is_human_body(img_np)
                 is_correct_tissue = True
                 tissue_err_msg = ""
                 if is_human:
-                    is_correct_tissue, tissue_err_msg = predictor.body_detector.validate_tissue_type(original_resized, st.session_state["cancer_type"])
+                    is_correct_tissue, tissue_err_msg = predictor.body_detector.validate_tissue_type(img_np, st.session_state["cancer_type"])
             else:
                 is_human = True
                 is_correct_tissue = True

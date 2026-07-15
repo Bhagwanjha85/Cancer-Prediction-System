@@ -41,6 +41,13 @@ class BodyDetector:
         Quick check if the image has skin/mucosal colors and is not a strictly non-human object.
         """
         try:
+            # Resize large images to a maximum dimension of 600 for performance and consistency
+            h, w = image_np.shape[:2]
+            max_dim = 600
+            if max(h, w) > max_dim:
+                scale = max_dim / max(h, w)
+                image_np = cv2.resize(image_np, (int(w * scale), int(h * scale)))
+                
             # Convert NumPy BGR to HSV
             hsv = cv2.cvtColor(image_np, cv2.COLOR_BGR2HSV)
             h, s, v = cv2.split(hsv)
@@ -114,16 +121,25 @@ class BodyDetector:
             else:
                 return True, ""
                 
-            # 1. Haar Cascade Face & Eye Detection (to reject face selfies/portraits)
+            # Resize large images to a maximum dimension of 600 for performance and consistency
+            h, w = image_np.shape[:2]
+            max_dim = 600
+            if max(h, w) > max_dim:
+                scale = max_dim / max(h, w)
+                image_np = cv2.resize(image_np, (int(w * scale), int(h * scale)))
+                
+            # 1. Haar Cascade Face, Profile, & Eye Detection (to reject face selfies/portraits)
             gray = cv2.cvtColor(image_np, cv2.COLOR_BGR2GRAY)
             face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+            profile_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_profileface.xml')
             eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml')
             
             faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=3, minSize=(30, 30))
+            profiles = profile_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=3, minSize=(30, 30))
             eyes = eye_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=3, minSize=(15, 15))
             
-            if len(faces) > 0 or len(eyes) > 1:
-                logger.warning(f"Selfie rejected by Haar Cascade: {len(faces)} faces, {len(eyes)} eyes detected.")
+            if len(faces) > 0 or len(profiles) > 0 or len(eyes) > 1:
+                logger.warning(f"Selfie rejected by Haar Cascade: {len(faces)} frontal faces, {len(profiles)} profile faces, {len(eyes)} eyes detected.")
                 return False, "Please upload a relevant image. Selfies and full portraits are not allowed."
                 
             # 2. ImageNet Class-based validation
@@ -141,19 +157,23 @@ class BodyDetector:
             
             logger.info(f"Tissue verification Top 10: {list(zip(top10_names, top10_probs))}")
             
-            # Selfie indicators (clothing, eyewear, background setups)
+            # Selfie & Scene indicators (clothing, eyewear, background setups, baby/infant objects)
             selfie_indicators = {
                 "t-shirt", "jersey", "suit", "coat", "necktie", "cardigan", "sweatshirt", "cloak", 
                 "trench coat", "gown", "academic gown", "kimono", "pajamas", "pajama", "swimming trunks", 
                 "sunglasses", "sunglass", "glasses", "spectacles", "eyeglasses", "groom", "bridegroom",
-                "wig", "desk", "monitor", "screen", "keyboard", "office", "room", "sofa", "studio"
+                "wig", "desk", "monitor", "screen", "keyboard", "office", "room", "sofa", "studio",
+                "diaper", "cradle", "crib", "high chair", "baby buggy", "plaything", "toy", "mannequin", 
+                "jeans", "jean", "sock", "shoe", "sandal", "boot", "backpack", "umbrella", "seat belt",
+                "people", "person", "child", "boy", "girl", "baby", "infant", "toddler", "teenager", 
+                "adult", "man", "woman"
             }
             
             for idx in range(3):
                 name = top10_names[idx]
                 prob = top10_probs[idx]
                 if prob > 0.15 and any(ind in name for ind in selfie_indicators):
-                    logger.warning(f"Selfie indicator matched: '{name}' ({prob:.4f})")
+                    logger.warning(f"Selfie/Portrait indicator matched: '{name}' ({prob:.4f})")
                     return False, "Please upload a relevant image. Selfies and full portraits are not allowed."
             
             # Define keywords for oral vs skin tissue checks

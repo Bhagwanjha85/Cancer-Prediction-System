@@ -150,7 +150,14 @@ class CancerPredictor:
             
             # 2. Check if human body image (if not skipped)
             if not skip_validation:
-                is_human = self.body_detector.is_human_body(original_resized)
+                # Decode image_bytes to BGR format for high-resolution validation
+                import cv2
+                nparr = np.frombuffer(image_bytes, np.uint8)
+                img_np = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+                if img_np is None:
+                    img_np = original_resized
+                
+                is_human = self.body_detector.is_human_body(img_np)
                 if not is_human:
                     result["message"] = (
                         "Please upload relevent image, this image is outside the content."
@@ -160,7 +167,7 @@ class CancerPredictor:
                 result["is_human"] = True
                 
                 # Check if correct tissue type matches the selection
-                is_correct_tissue, tissue_err_msg = self.body_detector.validate_tissue_type(original_resized, selected_detection_type)
+                is_correct_tissue, tissue_err_msg = self.body_detector.validate_tissue_type(img_np, selected_detection_type)
                 if not is_correct_tissue:
                     result["success"] = False
                     result["message"] = tissue_err_msg
