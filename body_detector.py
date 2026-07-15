@@ -42,7 +42,8 @@ FORBIDDEN_CLASSES = {
     "eyeglasses", "groom", "bridegroom", "bride", "wig", "diaper", "mannequin", "jeans", "jean", "sock", 
     "shoe", "sandal", "boot", "backpack", "umbrella", "seat belt", "apron", "poncho", "miniskirt", "skirt", 
     "dress", "brassiere", "maillot", "bikini", "uniform", "velvet", "wool", "hat", "cap", "bonnet", "helmet",
-    "purse", "wallet", "bag", "handbag",
+    "purse", "wallet", "bag", "handbag", "bow tie", "bow-tie", "hair slide", "hair spray", "face powder",
+    "eyeglass", "beanie", "sombrero", "turban", "feather boa", "stole", "stethoscope", "collar",
     # Baby / Child items (Cradles, High chairs, Toys)
     "cradle", "crib", "high chair", "baby buggy", "plaything", "toy", "teddy", "doll", "pacifier",
     # Food & Kitchen (Except allowed ones)
@@ -51,7 +52,7 @@ FORBIDDEN_CLASSES = {
     "milk", "cup", "glass", "plate", "bowl", "fork", "spoon", "knife", "bottle", "can", "pot", "pan",
     # General Person Indicators
     "people", "person", "child", "boy", "girl", "baby", "infant", "toddler", "teenager", 
-    "adult", "man", "woman"
+    "adult", "man", "woman", "doctor", "physician", "clinician", "dentist"
 }
 
 class BodyDetector:
@@ -155,16 +156,21 @@ class BodyDetector:
                 
             # 1. Haar Cascade Face, Profile, & Eye Detection (to reject face selfies/portraits)
             gray = cv2.cvtColor(image_np, cv2.COLOR_BGR2GRAY)
-            face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+            face_cascade_default = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+            face_cascade_alt = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_alt.xml')
+            face_cascade_alt2 = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_alt2.xml')
             profile_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_profileface.xml')
             eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml')
             
-            faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=3, minSize=(30, 30))
-            profiles = profile_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=3, minSize=(30, 30))
-            eyes = eye_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=3, minSize=(15, 15))
+            # Use high sensitivity: scaleFactor=1.05, minNeighbors=2
+            faces_def = face_cascade_default.detectMultiScale(gray, scaleFactor=1.05, minNeighbors=2, minSize=(30, 30))
+            faces_alt = face_cascade_alt.detectMultiScale(gray, scaleFactor=1.05, minNeighbors=2, minSize=(30, 30))
+            faces_alt2 = face_cascade_alt2.detectMultiScale(gray, scaleFactor=1.05, minNeighbors=2, minSize=(30, 30))
+            profiles = profile_cascade.detectMultiScale(gray, scaleFactor=1.05, minNeighbors=2, minSize=(30, 30))
+            eyes = eye_cascade.detectMultiScale(gray, scaleFactor=1.05, minNeighbors=2, minSize=(15, 15))
             
-            if len(faces) > 0 or len(profiles) > 0 or len(eyes) > 1:
-                logger.warning(f"Selfie rejected by Haar Cascade: {len(faces)} frontal faces, {len(profiles)} profile faces, {len(eyes)} eyes detected.")
+            if len(faces_def) > 0 or len(faces_alt) > 0 or len(faces_alt2) > 0 or len(profiles) > 0 or len(eyes) > 1:
+                logger.warning(f"Selfie rejected by Haar Cascade: frontal(def={len(faces_def)}, alt={len(faces_alt)}, alt2={len(faces_alt2)}), profile={len(profiles)}, eyes={len(eyes)}")
                 return False, "Your uploaded image is not relevent for this project. please upload relevent image and try again"
                 
             # 2. ImageNet Class-based validation
@@ -260,14 +266,19 @@ class BodyDetector:
             
             # Oral check
             if expected_key == "oral":
-                # Reject if skin score is higher and significant
-                if skin_score > oral_score and skin_score > 0.15:
-                    logger.warning(f"Oral check rejected: skin score {skin_score:.4f} is higher than oral score {oral_score:.4f}")
-                    return False, "Your uploaded image is not relevent for this project. please upload relevent image and try again"
-                    
-                has_mouth = (oral_score > 0.0) or any(word in "".join(top10_names[:3]) for word in ["lipstick", "mouth", "tongue", "tooth", "teeth", "lip", "lips"])
-                if not has_mouth and red_pct < 4.0:
-                    logger.warning(f"Oral check failed: no mouth keywords and red mucosal pct is {red_pct:.2f}%")
+                # Must contain mouth keywords in top 5 AND NOT contain any forbidden classes in top 5
+                has_mouth = any(word in "".join(top10_names[:5]) for word in ["lipstick", "mouth", "tongue", "tooth", "teeth", "lip", "lips", "cheek", "dentist"])
+                
+                # Check for any forbidden classes in top 5
+                has_forbidden = False
+                for name, prob in zip(top10_names[:5], top10_probs[:5]):
+                    if prob > 0.05:
+                        class_words = name.replace(",", "").replace("-", " ").split(" ")
+                        if any(word in FORBIDDEN_CLASSES for word in class_words):
+                            has_forbidden = True
+                            
+                if not has_mouth or has_forbidden:
+                    logger.warning("Oral check failed: no mouth keywords or has forbidden classes.")
                     return False, "Your uploaded image is not relevent for this project. please upload relevent image and try again"
             
             # Skin check
@@ -280,6 +291,18 @@ class BodyDetector:
                 # Check for mouth keywords in top predictions
                 has_mouth_close_up = any(word in top10_names[0] for word in ["mouth", "tongue", "tooth", "teeth"])
                 if has_mouth_close_up:
+                    return False, "Your uploaded image is not relevent for this project. please upload relevent image and try again"
+                
+                # Must NOT have any forbidden classes in top 5
+                has_forbidden = False
+                for name, prob in zip(top10_names[:5], top10_probs[:5]):
+                    if prob > 0.05:
+                        class_words = name.replace(",", "").replace("-", " ").split(" ")
+                        if any(word in FORBIDDEN_CLASSES for word in class_words):
+                            has_forbidden = True
+                            
+                if has_forbidden:
+                    logger.warning("Skin check failed: contains forbidden classes.")
                     return False, "Your uploaded image is not relevent for this project. please upload relevent image and try again"
                 
                 # Require either skin-related keywords or sufficient skin color coverage
