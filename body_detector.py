@@ -176,6 +176,35 @@ class BodyDetector:
                     logger.warning(f"Selfie/Portrait indicator matched: '{name}' ({prob:.4f})")
                     return False, "Please upload a relevant image. Selfies and full portraits are not allowed."
             
+            # 3. Top-1 ImageNet Whitelist check to reject non-human/non-medical objects and animals
+            top1_name = top10_names[0]
+            top1_prob = top10_probs[0]
+            
+            if expected_key == "skin":
+                skin_allowed_keywords = {
+                    "mole", "tick", "nematode", "band aid", "bandage", "bubble", "petri dish", 
+                    "loupe", "jellyfish", "eggnog", "espresso", "soup bowl", "mortar", "cappuccino",
+                    "flesh", "skin", "freckle", "spot", "acne", "scar", "dermatitis", "melanoma",
+                    "macula", "patch", "lesion", "rash", "dermis", "epidermis", "slug", "snail",
+                    "leech", "spider", "ant", "black widow", "insect", "pin", "needle",
+                    "nail", "screw", "hook", "corkscrew", "band-aid"
+                }
+                is_allowed = any(kw in top1_name for kw in skin_allowed_keywords)
+                if not is_allowed and top1_prob > 0.15:
+                    logger.warning(f"Skin check rejected non-skin object: '{top1_name}' with confidence {top1_prob:.4f}")
+                    return False, f"The uploaded image appears to be an object or scene ({top1_name}) rather than human skin. Please upload a valid close-up skin lesion image."
+
+            elif expected_key == "oral":
+                oral_allowed_keywords = {
+                    "mouth", "tongue", "tooth", "teeth", "lip", "lips", "lipstick", "cheek", "dentist",
+                    "chimpanzee", "orangutan", "gorilla", "macaque", "monkey", "proboscis",
+                    "stinkhorn", "pomegranate", "strawberry", "band aid", "diaper", "nipple"
+                }
+                is_allowed = any(kw in top1_name for kw in oral_allowed_keywords)
+                if not is_allowed and top1_prob > 0.15:
+                    logger.warning(f"Oral check rejected non-oral object: '{top1_name}' with confidence {top1_prob:.4f}")
+                    return False, f"The uploaded image appears to be an object or scene ({top1_name}) rather than the oral cavity. Please upload a valid close-up oral image."
+            
             # Define keywords for oral vs skin tissue checks
             oral_keywords = {
                 "lipstick", "mouth", "tongue", "tooth", "teeth", "lip", "lips", "face",
