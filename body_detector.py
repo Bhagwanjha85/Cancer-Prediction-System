@@ -165,7 +165,7 @@ class BodyDetector:
             
             if len(faces) > 0 or len(profiles) > 0 or len(eyes) > 1:
                 logger.warning(f"Selfie rejected by Haar Cascade: {len(faces)} frontal faces, {len(profiles)} profile faces, {len(eyes)} eyes detected.")
-                return False, "Please upload a relevant close-up medical image. Selfies and full portraits are not allowed."
+                return False, "Your uploaded image is not relevent for this project. please upload relevent image and try again"
                 
             # 2. ImageNet Class-based validation
             img_rgb = cv2.cvtColor(image_np, cv2.COLOR_BGR2RGB)
@@ -189,7 +189,7 @@ class BodyDetector:
                     for word in class_words:
                         if word in FORBIDDEN_CLASSES:
                             logger.warning(f"Tissue check rejected forbidden class: '{name}' ({prob:.4f})")
-                            return False, f"Please upload a relevant close-up medical image. Non-medical objects/scenes ({name}) are not allowed."
+                            return False, "Your uploaded image is not relevent for this project. please upload relevent image and try again"
             
             # 3. Top-1 ImageNet Whitelist check to reject non-human/non-medical objects and animals
             top1_name = top10_names[0]
@@ -207,7 +207,7 @@ class BodyDetector:
                 is_allowed = any(kw in top1_name for kw in skin_allowed_keywords)
                 if not is_allowed and top1_prob > 0.15:
                     logger.warning(f"Skin check rejected non-skin object: '{top1_name}' with confidence {top1_prob:.4f}")
-                    return False, f"The uploaded image appears to be an object or scene ({top1_name}) rather than human skin. Please upload a valid close-up skin lesion image."
+                    return False, "Your uploaded image is not relevent for this project. please upload relevent image and try again"
 
             elif expected_key == "oral":
                 oral_allowed_keywords = {
@@ -218,7 +218,7 @@ class BodyDetector:
                 is_allowed = any(kw in top1_name for kw in oral_allowed_keywords)
                 if not is_allowed and top1_prob > 0.15:
                     logger.warning(f"Oral check rejected non-oral object: '{top1_name}' with confidence {top1_prob:.4f}")
-                    return False, f"The uploaded image appears to be an object or scene ({top1_name}) rather than the oral cavity. Please upload a valid close-up oral image."
+                    return False, "Your uploaded image is not relevent for this project. please upload relevent image and try again"
             
             # Define keywords for oral vs skin tissue checks
             oral_keywords = {
@@ -263,30 +263,30 @@ class BodyDetector:
                 # Reject if skin score is higher and significant
                 if skin_score > oral_score and skin_score > 0.15:
                     logger.warning(f"Oral check rejected: skin score {skin_score:.4f} is higher than oral score {oral_score:.4f}")
-                    return False, "The uploaded image appears to be skin tissue. Please select the Skin Lesion test or upload an oral image."
+                    return False, "Your uploaded image is not relevent for this project. please upload relevent image and try again"
                     
                 has_mouth = (oral_score > 0.0) or any(word in "".join(top10_names[:3]) for word in ["lipstick", "mouth", "tongue", "tooth", "teeth", "lip", "lips"])
                 if not has_mouth and red_pct < 4.0:
                     logger.warning(f"Oral check failed: no mouth keywords and red mucosal pct is {red_pct:.2f}%")
-                    return False, "The uploaded image does not appear to be of the oral cavity (mouth). Please upload a valid oral image for this test."
+                    return False, "Your uploaded image is not relevent for this project. please upload relevent image and try again"
             
             # Skin check
             if expected_key == "skin":
                 # Reject if oral score is higher and significant
                 if oral_score > skin_score and oral_score > 0.15:
                     logger.warning(f"Skin check rejected: oral score {oral_score:.4f} is higher than skin score {skin_score:.4f}")
-                    return False, "The uploaded image appears to be an oral cavity image. Please select the Oral Cavity test or upload a skin image."
+                    return False, "Your uploaded image is not relevent for this project. please upload relevent image and try again"
                 
                 # Check for mouth keywords in top predictions
                 has_mouth_close_up = any(word in top10_names[0] for word in ["mouth", "tongue", "tooth", "teeth"])
                 if has_mouth_close_up:
-                    return False, "The uploaded image appears to be an oral cavity image. Please select the Oral Cavity test or upload a skin image."
+                    return False, "Your uploaded image is not relevent for this project. please upload relevent image and try again"
                 
                 # Require either skin-related keywords or sufficient skin color coverage
                 has_skin = (skin_score > 0.0)
                 if not has_skin and skin_pct < 20.0:
                     logger.warning(f"Skin check failed: no skin keywords and skin pct is {skin_pct:.2f}%")
-                    return False, "The uploaded image does not appear to be skin tissue. Please upload a valid skin image."
+                    return False, "Your uploaded image is not relevent for this project. please upload relevent image and try again"
                     
             return True, ""
             

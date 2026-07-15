@@ -160,7 +160,7 @@ class CancerPredictor:
                 is_human = self.body_detector.is_human_body(img_np)
                 if not is_human:
                     result["message"] = (
-                        "Please upload relevent image, this image is outside the content."
+                        "Your uploaded image is not relevent for this project. please upload relevent image and try again"
                     )
                     return result
                     
@@ -170,7 +170,7 @@ class CancerPredictor:
                 is_correct_tissue, tissue_err_msg = self.body_detector.validate_tissue_type(img_np, selected_detection_type)
                 if not is_correct_tissue:
                     result["success"] = False
-                    result["message"] = tissue_err_msg
+                    result["message"] = "Your uploaded image is not relevent for this project. please upload relevent image and try again"
                     return result
             else:
                 result["is_human"] = True

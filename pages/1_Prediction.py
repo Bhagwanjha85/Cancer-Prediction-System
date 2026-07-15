@@ -31,13 +31,15 @@ if os.path.exists(css_path):
 
 @st.cache_resource(show_spinner="Loading Cancer Diagnostic Models...")
 def load_cached_predictor(version: str):
-    # Force reload of predict module on initialization to pick up any signature changes
+    # Force reload of body_detector and predict modules to pick up updates immediately
     import importlib
+    import body_detector
     import predict
+    importlib.reload(body_detector)
     importlib.reload(predict)
     return predict.CancerPredictor()
 
-predictor = load_cached_predictor("v_force_reload_gradcam_conditional_highlighting_v5")
+predictor = load_cached_predictor("v_force_reload_gradcam_conditional_highlighting_v6")
 
 # Page title
 st.markdown(
@@ -164,24 +166,23 @@ if uploaded_file is not None:
                 st.markdown(
                      f"""
                      <div class="result-box-cancerous">
-                         <h4 style="margin: 0; font-weight: bold;">Please upload relevent image, this image is outside the content.</h4>
-                         <p style="margin: 5px 0 0 0; font-size: 0.95rem;">The pre-validation model identified the input image as non-human or outside the medical domain.</p>
+                         <h4 style="margin: 0; font-weight: bold;">Your uploaded image is not relevent for this project. please upload relevent image and try again</h4>
                      </div>
                      """,
                      unsafe_allow_html=True
                 )
-                st.warning("Please upload relevent image, this image is outside the content.")
+                st.warning("Your uploaded image is not relevent for this project. please upload relevent image and try again")
             elif not is_correct_tissue:
                 st.error("Validation Failed")
                 st.markdown(
                      f"""
                      <div class="result-box-cancerous">
-                         <h4 style="margin: 0; font-weight: bold;">{tissue_err_msg}</h4>
+                         <h4 style="margin: 0; font-weight: bold;">Your uploaded image is not relevent for this project. please upload relevent image and try again</h4>
                      </div>
                      """,
                      unsafe_allow_html=True
                 )
-                st.warning("Please upload relevent image, this image is outside the content.")
+                st.warning("Your uploaded image is not relevent for this project. please upload relevent image and try again")
             else:
                 st.toast("Image uploaded successfully!")
                 col1, col2 = st.columns([1, 1])
